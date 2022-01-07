@@ -5,6 +5,7 @@ const router = express.Router()
 let db = require("../models");
 db.sequelize.sync()
 
+// testing a user
 let aldo = {
   idsupplychainactor: "NULL",
   nome: "aldo",
@@ -24,7 +25,7 @@ const createUser = (input) => {
 
 // services home
 router.get("/", (req, res) => {
-  console.log("services hom")
+  console.log("services home")
   // rendering home.ejs
   res.render('home', { text: 'welcome to services' })
 })
@@ -45,6 +46,17 @@ router.get("/", (req, res) => {
 //     })
 //   })
 // })
+
+router.get("/registrazione", (req,res) =>{
+  console.log("servizio per la registrazione della distinta base e dell'anagrafica dei cicli ATV")
+
+  // ATTRIBUTI STANDARD
+  // entità codice parte: quantità, note
+  // entità operazione: ispezione, tempo
+  // 
+
+
+})
 
 router.get("/allusers", (req, res) => {
   console.log("get users service")
@@ -76,6 +88,23 @@ router.get('/realTask/:id', function (req, res) {
     // vendorArrivalDate: undefined,
     // projectDeliveryDate: undefined,
     // projId: undefined,
+
+
+    // servizio Bertoglio tesi
+    
+    // ORDINE ATV
+    // prodId (id prodotto)
+    // numero pezzi (qtySched)
+    // fasi
+    // risorse
+    // data inizio
+    // data fine prevista
+    // codice ITP
+
+    // ORDINE FORNITORE ODOBEZ
+    // codice articolo da produrre
+    // numero pezzi
+    // data richiesta di consegna
   }
 
   let salesorderitemid
@@ -98,6 +127,7 @@ router.get('/realTask/:id', function (req, res) {
         id: myjson.prodId
       }
     }).then(attr => {
+      // myjson.prodId = attr[0].prodId   nel caso in cui prodId identifichi l'id del prodotto
       myjson.prodStatus = attr[0].prodSatus //STATUS non SATUS!!!
       myjson.qtySched = attr[0].qtySched
       salesorderitemid = attr[0].idorderitem
