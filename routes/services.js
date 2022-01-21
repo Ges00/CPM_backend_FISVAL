@@ -59,6 +59,87 @@ router.get("/registrazione", (req, res) => {
 
 })
 
+router.get("/insertData", (req, res) => {
+  res.send("testing")
+  db.sequelize
+    .sync({
+      force: true
+    })
+    .then(function () {
+      db.SupplyChainClient.create({
+        // idactorclient null 
+      })
+    })
+    .then(function () {
+      db.SalesOrder.create({
+        idclient: 1, //ext key
+        vendorArrivalDate: new Date(),
+        projId: 2,
+        projDeliveryDate: new Date()
+      })
+    })
+    .then(function () {
+      db.SalesOrderItem.create({
+        idsalesorder: 1, //ext key
+        itemId: 3,
+        itemName: "test item"
+      })
+    })
+    .then(function () {
+      db.PartcodeEbom.create({
+        liv: 1,
+        pos: "001",
+        um: "nr",
+        qta: 1,
+        codice: "DAS001048",
+        descrizione: "descrizione primo elemento",
+        fan: "N",
+        //pos_pr = req.body.pos_pr,
+        progetto_stock: "STOCK", //nella tabella è chiamato progetto, ma avrei una ripetizione
+        note: "nessuna nota",
+        seriale: "Derivato",
+        primario: "S"
+      })
+    })
+    .then(function () {
+      db.PartcodeMbom.create({
+        idebom: 1, //ext key
+        m_b: "M",
+        liv: 1,
+        pos: "001",
+        um: "nr",
+        qta: 1,
+        codice: "DAS001048",
+        descrizione: "descrizione primo elemento",
+        fan: "N",
+        //pos_pr = req.body.pos_pr,
+        progetto_stock: "STOCK", //nella tabella è chiamato progetto, ma avrei una ripetizione
+        note: "nessuna nota",
+        seriale: "Derivato",
+        primario: "S"
+
+      })
+    })
+    .then(function () {
+      db.ProductDetails.create({
+        // per ora non ci sono attributi necessari
+      })
+    })
+    .then(function () {
+      db.Product.create({
+        articolo: "ARTICOLO TEST",
+        progetto: "PROGETTO TEST",
+        approvatore: "APPROVATORE TEST",
+        ultimo_agg: new Date(),
+        mod_da: "STUFFO TEST",
+        // external keys necessarie
+        iddetails: 1,
+        idebom: 1,
+        idmbom: 1
+      })
+    })
+})
+
 router.get("/allusers", (req, res) => {
   console.log("get users service")
   db.User.findAll().then(usersList => {
@@ -113,67 +194,60 @@ router.get("/ebomRegistration", (req, res) => {
 
   let date = new Date()
   //attributi mbom
-  var articolo = "VSS000799",
-    progetto = "01450.015",
-    approvatore = "system",
-    ultimo_agg = date,
-    mod_da = "mstuffo",
-    //attributi ebom
-    liv = 1,
-    pos = "001",
-    um = "nr",
-    qta = 1,
-    codice = "DAS001048",
-    descrizione = "descrizione primo elemento",
-    fan = "N",
-    //pos_pr = req.body.pos_pr,
-    progetto_stock = "STOCK", //nella tabella è chiamato progetto, ma avrei una ripetizione
-    note = "nessuna nota",
-    seriale = "Derivato",
-    primario = "S"
+  var productReq = {
+    body: {
+      articolo: "VSS000799 TEST",
+      progetto: "01450.015",
+      approvatore: "system",
+      ultimo_agg: date,
+      mod_da: "mstuffo",
+      // external keys necessarie
+      iddetails: 1,
+      idebom: 1,
+      idmbom: 1
+
+    }
+  }
+  //attributi ebom
+  var ebomReq = {
+    body: {
+      liv: 1,
+      pos: "001",
+      um: "nr",
+      qta: 1,
+      codice: "DAS001048",
+      descrizione: "descrizione primo elemento",
+      fan: "N",
+      //pos_pr = req.body.pos_pr,
+      progetto_stock: "STOCK", //nella tabella è chiamato progetto, ma avrei una ripetizione
+      note: "nessuna nota",
+      seriale: "Derivato",
+      primario: "S"
+
+    }
+  }
 
   db.sequelize
     .sync({
-      force: true
+      // se metto il force a true non funziona, nel caricare azzera i dati della tabella parcodeMbom quindi cade il vincolo
+      // di chiave esterna e non carica correttamente i dati. perchè?
+      force: false
     })
     .then(function () {
       // con la funzione create posso direttamente passare req.body se questa è già correttamente formattata
       // db.PartcodeEbom.create(req.body)
       // posso filtrare i campi di req.body tramite fields[]
-      db.PartcodeEbom.create({
-        //idebom: idebom, //external key for parent ebom. quale dovrebbe essere nella tabella?
-        liv: liv,
-        pos: pos,
-        um: um,
-        qta: qta,
-        codice: codice,
-        descrizione: descrizione,
-        fan: fan,
-        //pos_pr: pos_pr,
-        progetto_stock: progetto_stock,
-        note: note,
-        seriale: seriale,
-        primario: primario
-        // idproduct ha senso, come diceva il prof, collegare ad ogni ebom il prodotto a cui fa riferimento?
-      })
-        .then(() => {
-          db.PartcodeMbom.create({
-            idebom: 1
-          })
-        })
-        .then(() => {
-          db.Product.create({
-            articolo: articolo,
-            progetto: progetto,
-            approvatore: approvatore,
-            ultimo_agg: ultimo_agg,
-            mod_da: mod_da,
-            // external keys necessarie
-            iddetails: 1,
-            idebom: 1,
-            idmbom: 1
-          })
-        })
+
+      // idproduct ha senso, come diceva il prof, collegare ad ogni ebom il prodotto a cui fa riferimento?
+      //idebom: idebom, //external key for parent ebom. quale dovrebbe essere nella tabella?
+      db.PartcodeEbom.create(ebomReq.body)
+
+    })
+    .then(() => {
+      db.Product.create(productReq.body)
+    })
+    .then(() => {
+      res.send("finished")
     })
 
 
