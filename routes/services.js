@@ -3,6 +3,7 @@ const express = require('express')
 const router = express.Router()
 
 let db = require("../models");
+const Product = require('../models/product_perspective/Product');
 db.sequelize.sync()
 
 // testing a user
@@ -47,7 +48,7 @@ router.get("/", (req, res) => {
 //   })
 // })
 
-router.get("/registrazione", (req,res) =>{
+router.get("/registrazione", (req, res) => {
   console.log("servizio per la registrazione della distinta base e dell'anagrafica dei cicli ATV")
 
   // ATTRIBUTI STANDARD
@@ -65,6 +66,164 @@ router.get("/allusers", (req, res) => {
       list: usersList
     })
   })
+})
+
+router.get("/ebomRegistration", (req, res) => {
+
+  // req should be formatted as:
+
+  // ATTRIBUTI ENTITA' PRODOTTO O DETTAGLI PRODOTTO
+  // articolo
+  // progetto
+  // approvatore
+  // ultimo_agg
+  // mod_da
+
+  // ATTRIBUTI ENTITA' EBOM
+  // liv
+  // pos
+  // um
+  // qta
+  // codice
+  // descrizione
+  // fan
+  // pos_pr (NULLABLE)
+  // progetto (NULLABLE)
+  // note (NULLABLE)
+  // seriale
+  // primario
+
+  // var articolo = req.body.articolo,
+  //     progetto = req.body.progetto,
+  //     approvatore = req.body.approvatore,
+  //     ultimo_agg = req.body.ultimo_agg,
+  //     mod_da = req.body.mod_da,
+  //     liv = req.body.liv,
+  //     pos = req.body.pos,
+  //     um = req.body.um,
+  //     qta = req.body.qta,
+  //     codice = req.body.codice,
+  //     descrizione = req.body.descrizione,
+  //     fan = req.body.fan,
+  //     pos_pr = req.body.pos_pr,
+  //     progetto_stock = req.body.progetto_stock, //nella tabella è chiamato progetto, ma avrei una ripetizione
+  //     note = req.body.req.body.note,
+  //     seriale = req.body.seriale,
+  //     primario = req.body.primario
+
+  let date = new Date()
+  //attributi mbom
+  var articolo = "VSS000799",
+    progetto = "01450.015",
+    approvatore = "system",
+    ultimo_agg = date,
+    mod_da = "mstuffo",
+    //attributi ebom
+    liv = 1,
+    pos = "001",
+    um = "nr",
+    qta = 1,
+    codice = "DAS001048",
+    descrizione = "descrizione primo elemento",
+    fan = "N",
+    //pos_pr = req.body.pos_pr,
+    progetto_stock = "STOCK", //nella tabella è chiamato progetto, ma avrei una ripetizione
+    note = "nessuna nota",
+    seriale = "Derivato",
+    primario = "S"
+
+  db.sequelize
+    .sync({
+      force: true
+    })
+    .then(function () {
+      // con la funzione create posso direttamente passare req.body se questa è già correttamente formattata
+      // db.PartcodeEbom.create(req.body)
+      // posso filtrare i campi di req.body tramite fields[]
+      db.PartcodeEbom.create({
+        //idebom: idebom, //external key for parent ebom. quale dovrebbe essere nella tabella?
+        liv: liv,
+        pos: pos,
+        um: um,
+        qta: qta,
+        codice: codice,
+        descrizione: descrizione,
+        fan: fan,
+        //pos_pr: pos_pr,
+        progetto_stock: progetto_stock,
+        note: note,
+        seriale: seriale,
+        primario: primario
+        // idproduct ha senso, come diceva il prof, collegare ad ogni ebom il prodotto a cui fa riferimento?
+      })
+        .then(() => {
+          db.PartcodeMbom.create({
+            idebom: 1
+          })
+        })
+        .then(() => {
+          db.Product.create({
+            articolo: articolo,
+            progetto: progetto,
+            approvatore: approvatore,
+            ultimo_agg: ultimo_agg,
+            mod_da: mod_da,
+            // external keys necessarie
+            iddetails: 1,
+            idebom: 1,
+            idmbom: 1
+          })
+        })
+    })
+
+
+})
+
+router.post('/mbomRegistration', (res, req) => {
+
+  let date = new Date()
+  // attributi prodotto
+  var articolo = "VSS000799",
+    progetto = "01450.015",
+    approvatore = "system",
+    ultimo_agg = date,
+    mod_da = "mstuffo",
+    // attributi mbom
+    m_b = "M",
+    liv = 1,
+    pos = "001",
+    um = "nr",
+    qta = 1,
+    codice = "DAS001048",
+    descrizione = "descrizione primo elemento",
+    fan = "N",
+    //pos_pr = req.body.pos_pr,
+    progetto_stock = "STOCK", //nella tabella è chiamato progetto, ma avrei una ripetizione
+    note = "nessuna nota",
+    seriale = "Derivato",
+    primario = "S"
+
+  db.sequelize
+    .sync({
+      force: true
+    })
+    .then(() => {
+      db.PartcodeMbom.create({
+        m_b: m_b,
+        liv: liv,
+        pos: pos,
+        um: um,
+        qta: qta,
+        codice: codice,
+        descrizione: descrizione,
+        fan: fan,
+        //pos_pr: pos_pr,
+        progetto_stock: progetto_stock,
+        note: note,
+        seriale: seriale,
+        primario: primario
+      })
+    })
 })
 
 router.get('/realTask/:id', function (req, res) {
@@ -91,7 +250,7 @@ router.get('/realTask/:id', function (req, res) {
 
 
     // servizio Bertoglio tesi
-    
+
     // ORDINE ATV
     // prodId (id prodotto)
     // numero pezzi (qtySched)
@@ -144,35 +303,35 @@ router.get('/realTask/:id', function (req, res) {
         myjson.transProcessTime = attr[0].transProcessTime
         myjson.toHours = attr[0].toHours
         workcenter = attr[0].idworkcenter
-        
+
         db.SalesOrderItem.findAll({
           where: {
             id: salesorderitemid
           }
         }).then(attr => {
-            myjson.itemId = attr[0].itemId
-            myjson.itemName = attr[0].itemName
-            salesorderid = attr[0].idsalesorder
-            
-            db.SalesOrder.findAll({
+          myjson.itemId = attr[0].itemId
+          myjson.itemName = attr[0].itemName
+          salesorderid = attr[0].idsalesorder
+
+          db.SalesOrder.findAll({
+            where: {
+              id: salesorderid
+            }
+          }).then(attr => {
+            myjson.vendorArrivalDate = attr[0].vendorArrivalDate
+            myjson.projDeliveryDate = attr[0].projDeliveryDate
+            myjson.projId = attr[0].projId
+
+            db.WorkCenter.findAll({
               where: {
-                id: salesorderid
+                id: workcenter
               }
             }).then(attr => {
-              myjson.vendorArrivalDate = attr[0].vendorArrivalDate
-              myjson.projDeliveryDate = attr[0].projDeliveryDate
-              myjson.projId = attr[0].projId
-
-              db.WorkCenter.findAll({
-                where: {
-                  id: workcenter
-                }
-              }).then(attr => {
-                myjson.wrkCtrGroupId = attr[0].wrkCtrGroupId
-                res.json(myjson)
-              })
+              myjson.wrkCtrGroupId = attr[0].wrkCtrGroupId
+              res.json(myjson)
             })
           })
+        })
       })
     })
   })
@@ -187,6 +346,9 @@ router.get('/task1', function (req, res) {
       userSecondName: attr[0]['cognome']
     })
   })
+
+
+
 })
 
 

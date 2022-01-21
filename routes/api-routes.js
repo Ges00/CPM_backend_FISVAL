@@ -1,6 +1,7 @@
 var db = require("../models");
 var passport = require("../config/passport");
 
+// NOT WORKING
 
 module.exports = function (app) {
     app.set('view engine', 'ejs');

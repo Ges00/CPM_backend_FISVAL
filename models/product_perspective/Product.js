@@ -28,7 +28,28 @@ module.exports = function (sequelize, DataTypes) {
         prodstatus: {
             type: DataTypes.STRING(255),
             allowNull: true
+        },
+        articolo: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        progetto: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        approvatore: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        ultimo_agg: {
+            type: DataTypes.DATE,
+            allowNull: false
+        },
+        mod_da: {
+            type: DataTypes.STRING(255),
+            allowNull: false
         }
+
     }, {
         sequelize,
         tableName: 'Product',
