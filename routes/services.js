@@ -22,39 +22,191 @@ router.get("/", (req, res) => {
   res.render('home', { text: 'welcome to services' })
 })
 
+router.get("/initializingDB", (req, res) => {
+  db.sequelize
+    .sync()
+    .then(function () {
+      db.SupplyChainClient.create({
+        id: 1,
+        // idactorclient null 
+      })
+    })
+    .then(function () {
+      db.SalesOrder.create({
+        id: 1,
+        idclient: 1, //ext key
+        vendorArrivalDate: new Date(),
+        projId: 2,
+        projDeliveryDate: new Date()
+      })
+    })
+    .then(function () {
+      db.SalesOrderItem.create({
+        id: 1,
+        idsalesorder: 1, //ext key
+        itemId: 3,
+        itemName: "test item"
+      })
+    })
+    .then(function () {
+      db.PartcodeEbom.create({
+        id: 1,
+        liv: 1,
+        pos: "001",
+        um: "nr",
+        qta: 1,
+        codice: "DAS001048",
+        descrizione: "descrizione primo elemento",
+        fan: "N",
+        //pos_pr = req.body.pos_pr,
+        progetto_stock: "STOCK", //nella tabella è chiamato progetto, ma avrei una ripetizione, quindi aggiungo "stock"
+        note: "nessuna nota",
+        seriale: "Derivato",
+        primario: "S"
+      })
+    })
+    .then(function () {
+      db.PartcodeMbom.create({
+        id: 1,
+        idebom: 1, //ext key
+        m_b: "M",
+        liv: 1,
+        pos: "001",
+        um: "nr",
+        qta: 1,
+        codice: "DAS001048",
+        descrizione: "descrizione primo elemento",
+        fan: "N",
+        //pos_pr = req.body.pos_pr,
+        progetto_stock: "STOCK",
+        note: "nessuna nota",
+        seriale: "Derivato",
+        primario: "S"
+      })
+    })
+    .then(function () {
+      db.ProductDetails.create({
+        id: 1,
+        // per ora non ci sono attributi necessari
+      })
+    })
+    .then(function () {
+      db.Product.create({
+        id: 1,
+        articolo: "ARTICOLO TEST",
+        progetto: "PROGETTO TEST",
+        approvatore: "APPROVATORE TEST",
+        ultimo_agg: new Date(),
+        mod_da: "STUFFO TEST",
+        // external keys necessarie
+        iddetails: 1,
+        idebom: 1,
+        idmbom: 1
+      })
+    })
+    .then(() => {
+      db.ContractWorkOrder.create({
+        id: 1,
+        idmbom: 1
+      })
+      db.PurchaseOrder.create({
+        id: 1,
+        idmbom: 1
+      })
+    })
+    .then(() => {
+      db.ContractWorkOrderItem.create({
+        id: 1,
+        idworkorder: 1
+      })
+      db.PurchaseOrderItem.create({
+        id: 1,
+        idorder: 1 //forse è meglio cambiare nome, chiamarlo idpurchaseorder
+      })
+    })
+    .then(() => {
+      db.ProductionOrder.create({
+        id: 1,
+        idmbom: 1,
+        idworkorder: 1,
+        idpurchaseorder: 1,
+        idorderitem: 1,
+        prodStatus: "OK",
+        qtySched: 10
+      })
+    })
+    .then(() => {
+      res.send("insertion of data in the database finished sucessfully")
+    })
+})
+
+// TO DO 
+router.get("/notifyProductionOrder", (req, res) => {
+  db.sequelize
+    .sync()
+    .then(() => {
+      db.ProductionOrder.create({
+        idmbom: 1,
+        idworkorder: 1,
+        idpurchaseorder: 1,
+        idorderitem: 1,
+        prodStatus: "OK",
+        qtySched: 10
+      })
+    })
+    .then(() => {
+      res.send("insertion sales order and order items in the database finished sucessfully")
+    })
+})
 
 router.get("/salesOrderRegistration", (req, res) => {
-  var json ={
+  var sales_order = {
     //sales order
-    progetto:"",
-    nome_prodotto:"",
-    cliente:"",
-    anno:"",
-    ordine_prod:"",
-    nome_odp:"", //uguale a nome_prodotto
-    ciclo_lavorazione:"",
-    distinta_base:"", //uguale a numero_articolo
-    qta:"",
-    //sales order item
-    fase: "",
-    operazione: "",
-    descrizione: "",
-    tempo:"",
-    data_inizio:"",
-    data_fine:"",
-    gdr:"",
-    risorsa:"",
-    ispezione:""
+    vendorArrivalDate: new Date(),
+    projId: 2,
+    projDeliveryDate: new Date(),
+    //ext keys
+    idclient: 1
   }
+
+  var order_item_1 = {
+    //sales order item
+    // qta: 11,
+    itemId: 1,
+    itemName: "name 1",
+    // ext key
+    idsalesorder: 1
+  }
+
+  var order_item_2 = {
+    //sales order item
+    //qta: 22,
+    itemId: 2,
+    itemName: "name 2",
+    // ext key
+    idsalesorder: 1
+  }
+  db.sequelize
+    .sync()
+    .then(() => {
+      db.SalesOrder.create(sales_order)
+    })
+    .then(() => {
+      db.SalesOrderItem.create(order_item_1)
+      db.SalesOrderItem.create(order_item_2)
+
+    })
+    .then(() => {
+      res.send("insertion sales order and order items in the database finished sucessfully")
+    })
+
 })
 
 // have to be casted when the db has just being created, to insert all the necessaries 
 // records in tables in order to satisfy external key constraints to test all functionalities
 router.get("/insertData", (req, res) => {
   db.sequelize
-    .sync({
-      force: true
-    })
+    .sync()
     .then(function () {
       db.SupplyChainClient.create({
         // idactorclient null 
@@ -116,6 +268,7 @@ router.get("/insertData", (req, res) => {
     })
     .then(function () {
       db.Product.create({
+        id: 1,
         articolo: "ARTICOLO TEST",
         progetto: "PROGETTO TEST",
         approvatore: "APPROVATORE TEST",
@@ -128,6 +281,32 @@ router.get("/insertData", (req, res) => {
       })
     })
     .then(() => {
+      db.ContractWorkOrder.create({
+        idmbom: 1
+      })
+      db.PurchaseOrder.create({
+        idmbom: 1
+      })
+    })
+    .then(() => {
+      db.ContractWorkOrderItem.create({
+        idworkorder: 1
+      })
+      db.PurchaseOrderItem.create({
+        idorder: 1 //forse è meglio cambiare nome, chiamarlo idpurchaseorder
+      })
+    })
+    .then(() => {
+      db.ProductionOrder.create({
+        idmbom: 1,
+        idworkorder: 1,
+        idpurchaseorder: 1,
+        idorderitem: 1,
+        prodStatus: "OK",
+        qtySched: 10
+      })
+    })
+    .then(() => {
       res.send("insertion of data in the database finished sucessfully")
     })
 })
@@ -137,16 +316,13 @@ router.get("/insertData", (req, res) => {
 // route to the html index file we have to compile to then send
 // the post request
 var path = require('path');
-router.get("/ebomGETPOST", function(req, res) {
-    res.sendFile(path.join(__dirname + '/ebomRequest.html'));
+router.get("/ebomGETPOST", function (req, res) {
+  res.sendFile(path.join(__dirname + '/ebomRequest.html'));
 });
-
 // route submitted after compiling the form
 router.post("/ebomGETPOST", (req, res) => {
   db.sequelize
-    .sync({
-      force: false
-    })
+    .sync()
     .then(function () {
       db.PartcodeEbom.create({
         liv: req.body.liv,
@@ -180,6 +356,7 @@ router.post("/ebomGETPOST", (req, res) => {
       res.send("Ebom registration finished sucessfully")
     })
 })
+
 router.get("/ebomRegistration", (req, res) => {
 
   // req should be formatted as:
@@ -241,11 +418,7 @@ router.get("/ebomRegistration", (req, res) => {
   }
 
   db.sequelize
-    .sync({
-      // se metto il force a true non funziona, nel caricare azzera i dati della tabella parcodeMbom quindi cade il vincolo
-      // di chiave esterna e non carica correttamente i dati. capire perché!
-      force: false
-    })
+    .sync()
     .then(function () {
       // con la funzione create posso direttamente passare req.body se questa è già correttamente formattata
       // db.PartcodeEbom.create(req.body)
@@ -302,9 +475,7 @@ router.get('/mbomRegistration', (req, res) => {
   }
 
   db.sequelize
-    .sync({
-      force: false
-    })
+    .sync()
     .then(function () {
       db.PartcodeMbom.create(mbomReq.body)
     })
@@ -413,7 +584,7 @@ router.get('/realTask/:id', function (req, res) {
 
 
 
-// servizi di testing, non utilizzati ################################################################################################################
+//  ########################### servizi di testing, non utilizzati ###################################################
 router.get('/task1', function (req, res) {
   db.User.findAll({
     attributes: ['nome', 'cognome']
