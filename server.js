@@ -29,16 +29,9 @@ const userRouter = require("./routes/services")
 
 
 // connettersi al database prima di richiamare le rotte
-
 app.use("/services", userRouter)
 
-//app.use("/serv2", userRouter)
 
 app.listen(PORT, function () {
   console.log("App listening on PORT " + PORT);
 });
-
-
-
-
-//app.listen(PORT)

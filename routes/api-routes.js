@@ -1,7 +1,7 @@
 var db = require("../models");
 var passport = require("../config/passport");
 
-// NOT WORKING
+// NOT WORKING, bertoglio style
 
 module.exports = function (app) {
     app.set('view engine', 'ejs');
