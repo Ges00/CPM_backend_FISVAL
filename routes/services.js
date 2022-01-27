@@ -194,7 +194,6 @@ router.get("/salesOrderRegistration", (req, res) => {
     .then(() => {
       db.SalesOrderItem.create(order_item_1)
       db.SalesOrderItem.create(order_item_2)
-
     })
     .then(() => {
       res.send("insertion sales order and order items in the database finished sucessfully")
@@ -310,8 +309,6 @@ router.get("/insertData", (req, res) => {
       res.send("insertion of data in the database finished sucessfully")
     })
 })
-
-
 
 // route to the html index file we have to compile to then send
 // the post request
@@ -581,8 +578,6 @@ router.get('/realTask/:id', function (req, res) {
     })
   })
 })
-
-
 
 //  ########################### servizi di testing, non utilizzati ###################################################
 router.get('/task1', function (req, res) {
