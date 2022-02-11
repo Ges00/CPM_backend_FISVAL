@@ -19,6 +19,12 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(255),
             allowNull: false
         },
+        // modifica schema ER
+        idproduct:{
+            type: DataTypes.INTEGER,
+            allowNull: true
+
+        }
     }, {
         sequelize,
         tableName: 'SalesOrderItem',
@@ -38,6 +44,13 @@ module.exports = function (sequelize, DataTypes) {
                 using: "BTREE",
                 fields: [
                     { name: "idsalesorder" },
+                ]
+            },
+            {
+                name: "product",
+                using: "BTREE",
+                fields: [
+                    { name: "idproduct" },
                 ]
             },
         ]

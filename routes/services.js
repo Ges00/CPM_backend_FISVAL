@@ -5,7 +5,7 @@ const router = express.Router()
 router.use(bodyParser.urlencoded({ extended: false }));
 
 let db = require("../models");
-const Product = require('../models/product_perspective/Product');
+//const Product = require('../models/product_perspective/Product');
 db.sequelize.sync()
 
 // testing a user
@@ -44,6 +44,7 @@ router.get("/initializingDB", (req, res) => {
       db.SalesOrderItem.create({
         id: 1,
         idsalesorder: 1, //ext key
+        idproduct: 1, //ext key
         itemId: 3,
         itemName: "test item"
       })
@@ -84,12 +85,12 @@ router.get("/initializingDB", (req, res) => {
         primario: "S"
       })
     })
-    .then(function () {
-      db.ProductDetails.create({
-        id: 1,
-        // per ora non ci sono attributi necessari
-      })
-    })
+    // .then(function () {
+    //   db.ProductDetails.create({
+    //     id: 1,
+    //     // per ora non ci sono attributi necessari
+    //   })
+    // })
     .then(function () {
       db.Product.create({
         id: 1,
@@ -101,7 +102,7 @@ router.get("/initializingDB", (req, res) => {
         // external keys necessarie
         iddetails: 1,
         idebom: 1,
-        idmbom: 1
+        //idmbom: 1
       })
     })
     .then(() => {
@@ -313,6 +314,7 @@ router.get("/insertData", (req, res) => {
 // route to the html index file we have to compile to then send
 // the post request
 var path = require('path');
+const { type } = require('os');
 router.get("/ebomGETPOST", function (req, res) {
   res.sendFile(path.join(__dirname + '/ebomRequest.html'));
 });
@@ -350,6 +352,30 @@ router.post("/ebomGETPOST", (req, res) => {
       })
     })
     .then(() => {
+      res.send("Ebom registration finished sucessfully")
+    })
+})
+
+router.post("/ebomJsonPOST", (req, res) => {
+  db.sequelize
+    .sync()
+    .then(function () {
+      db.PartcodeEbom.create({
+        liv: req.body["liv"],
+        pos: req.body["pos"],
+        um: req.body["um"],
+        qta: req.body["qta"],
+        codice: req.body["codice"],
+        descrizione: req.body["descrizione"],
+        fan: req.body["fan"],
+        //pos_pr = req.body.pos_pr,
+        progetto_stock: req.body["progetto_stock"],
+        note: req.body["note"],
+        seriale: req.body["seriale"],
+        primario: req.body["primario"]
+      })
+    })
+    then(() => {
       res.send("Ebom registration finished sucessfully")
     })
 })
@@ -579,26 +605,47 @@ router.get('/realTask/:id', function (req, res) {
   })
 })
 
-//  ########################### servizi di testing, non utilizzati ###################################################
-router.get('/task1', function (req, res) {
-  db.User.findAll({
-    attributes: ['nome', 'cognome']
-  }).then(attr => {
-    res.json({
-      userName: attr[0]['nome'],
-      userSecondName: attr[0]['cognome']
-    })
+router.get('/ciao', function(req, res) {
+  res.json({
+    a : "ciao"
   })
 })
 
-router.get("/allusers", (req, res) => {
-  console.log("get users service")
-  db.User.findAll().then(usersList => {
-    res.json({
-      list: usersList
-    })
+
+
+
+router.post('/testJson', function(req, res) {
+  console.log(req.body["fan"])
+  //let json = JSON.parse(req.body)
+  //console.log(json.pos)
+  //console.log(json)
+  res.json({
+    a: "OK"
   })
 })
+
+
+
+//  ########################### servizi di testing, non utilizzati ###################################################
+// router.get('/task1', function (req, res) {
+//   db.User.findAll({
+//     attributes: ['nome', 'cognome']
+//   }).then(attr => {
+//     res.json({
+//       userName: attr[0]['nome'],
+//       userSecondName: attr[0]['cognome']
+//     })
+//   })
+// })
+
+// router.get("/allusers", (req, res) => {
+//   console.log("get users service")
+//   db.User.findAll().then(usersList => {
+//     res.json({
+//       list: usersList
+//     })
+//   })
+// })
 
 
 module.exports = router

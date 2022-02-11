@@ -58,13 +58,14 @@ function initModels(sequelize){
     let UserCategory = _UserCategory(sequelize, DataTypes);
     let WorkCenter = _WorkCenter(sequelize, DataTypes);
 
-
-    Product.belongsTo(ProductDetails, { foreignKey: "iddeatils"});
-    ProductDetails.hasOne(Product, { foreignKey: "iddeatils"});
+    //SCHEMA ER 2
+    //Product.belongsTo(ProductDetails, { foreignKey: "iddeatils"});
+    //ProductDetails.hasOne(Product, { foreignKey: "iddeatils"});
     Product.belongsTo(PartcodeEbom, { foreignKey: "idebom"});
     PartcodeEbom.hasOne(Product, { foreignKey: "idebom"});
-    Product.belongsTo(PartcodeMbom, { foreignKey: "idmbom"});
-    PartcodeMbom.hasOne(Product, { foreignKey: "idmbom"});
+
+    //Product.belongsTo(PartcodeMbom, { foreignKey: "idmbom"});
+    //PartcodeMbom.hasOne(Product, { foreignKey: "idmbom"});
     PartcodeMbom.belongsTo(PartcodeEbom, { foreignKey: "idebom"});
     PartcodeEbom.hasOne(PartcodeMbom, { foreignKey: "idebom"});
     PartcodeEbom.belongsTo(PartcodeEbom, { foreignKey: "idebom"}); //auto dipendenza Ebom
@@ -99,8 +100,13 @@ function initModels(sequelize){
     ProductionPhase.hasMany(ProductionPhase, { foreignKey: "idproductionphase"}); //auto dipendenza
     ProductionPhase.belongsTo(ProductionOrder, {foreignKey: "idproductionorder"});
     ProductionOrder.hasMany(ProductionPhase, {foreignKey: "idproductionorder"});
-    Product.belongsTo(SalesOrderItem, {foreignKey: "idorderitem"});
-    SalesOrderItem.hasMany(Product, {foreignKey: "idorderitem"}); 
+    
+    //SCHEMA ER 2
+    //Product.belongsTo(SalesOrderItem, {foreignKey: "idorderitem"});
+    //SalesOrderItem.hasMany(Product, {foreignKey: "idorderitem"}); 
+    SalesOrderItem.belongsTo(Product, {foreignKey: "idproduct"});
+    Product.hasMany(SalesOrderItem, {foreignKey: "idproduct"}); 
+    
     ProductionOrder.belongsTo(SalesOrderItem, {foreignKey: "idorderitem"});
     SalesOrderItem.hasMany(ProductionOrder, {foreignKey: "idorderitem"}); 
     SalesOrderItem.belongsTo(SalesOrder, {foreignKey: "idsalesorder"});
