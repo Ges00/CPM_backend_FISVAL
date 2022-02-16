@@ -313,48 +313,48 @@ router.get("/insertData", (req, res) => {
 
 // route to the html index file we have to compile to then send
 // the post request
-var path = require('path');
-const { type } = require('os');
-router.get("/ebomGETPOST", function (req, res) {
-  res.sendFile(path.join(__dirname + '/ebomRequest.html'));
-});
-// route submitted after compiling the form
-router.post("/ebomGETPOST", (req, res) => {
-  db.sequelize
-    .sync()
-    .then(function () {
-      db.PartcodeEbom.create({
-        liv: req.body.liv,
-        pos: req.body.pos,
-        um: req.body.um,
-        qta: req.body.qta,
-        codice: req.body.codice,
-        descrizione: req.body.descrizione,
-        fan: req.body.fan,
-        //pos_pr = req.body.pos_pr,
-        progetto_stock: req.body.progetto_stock,
-        note: req.body.note,
-        seriale: req.body.seriale,
-        primario: req.body.primario
-      })
-    })
-    .then(() => {
-      db.Product.create({
-        articolo: req.body.articolo,
-        progetto: req.body.progetto,
-        approvatore: req.body.approvatore,
-        ultimo_agg: new Date(),
-        mod_da: req.body.mod_da,
-        // external keys necessarie
-        iddetails: 1,
-        idebom: 1,
-        idmbom: 1
-      })
-    })
-    .then(() => {
-      res.send("Ebom registration finished sucessfully")
-    })
-})
+// var path = require('path');
+// const { type } = require('os');
+// router.get("/ebomGETPOST", function (req, res) {
+//   res.sendFile(path.join(__dirname + '/ebomRequest.html'));
+// });
+// // route submitted after compiling the form
+// router.post("/ebomGETPOST", (req, res) => {
+//   db.sequelize
+//     .sync()
+//     .then(function () {
+//       db.PartcodeEbom.create({
+//         liv: req.body.liv,
+//         pos: req.body.pos,
+//         um: req.body.um,
+//         qta: req.body.qta,
+//         codice: req.body.codice,
+//         descrizione: req.body.descrizione,
+//         fan: req.body.fan,
+//         //pos_pr = req.body.pos_pr,
+//         progetto_stock: req.body.progetto_stock,
+//         note: req.body.note,
+//         seriale: req.body.seriale,
+//         primario: req.body.primario
+//       })
+//     })
+//     .then(() => {
+//       db.Product.create({
+//         articolo: req.body.articolo,
+//         progetto: req.body.progetto,
+//         approvatore: req.body.approvatore,
+//         ultimo_agg: new Date(),
+//         mod_da: req.body.mod_da,
+//         // external keys necessarie
+//         iddetails: 1,
+//         idebom: 1,
+//         idmbom: 1
+//       })
+//     })
+//     .then(() => {
+//       res.send("Ebom registration finished sucessfully")
+//     })
+// })
 
 router.post("/ebomJsonPOST", (req, res) => {
   db.sequelize
@@ -375,138 +375,70 @@ router.post("/ebomJsonPOST", (req, res) => {
         primario: req.body["primario"]
       })
     })
-    then(() => {
-      res.send("Ebom registration finished sucessfully")
-    })
-})
-
-router.get("/ebomRegistration", (req, res) => {
-
-  // req should be formatted as:
-
-  // ATTRIBUTI ENTITA' PRODOTTO O DETTAGLI PRODOTTO
-  // articolo
-  // progetto
-  // approvatore
-  // ultimo_agg
-  // mod_da
-
-  // ATTRIBUTI ENTITA' EBOM
-  // liv
-  // pos
-  // um
-  // qta
-  // codice
-  // descrizione
-  // fan
-  // pos_pr (NULLABLE)
-  // progetto (NULLABLE)
-  // note (NULLABLE)
-  // seriale
-  // primario
-
-  let date = new Date()
-
-  //attributi prodotto
-  var productReq = {
-    body: {
-      articolo: "VSS000799 TEST",
-      progetto: "01450.015",
-      approvatore: "system",
-      ultimo_agg: date,
-      mod_da: "mstuffo",
-      // external keys necessarie
-      iddetails: 1,
-      idebom: 1,
-      idmbom: 1
-    }
-  }
-
-  //attributi ebom
-  var ebomReq = {
-    body: {
-      liv: 1,
-      pos: "001",
-      um: "nr",
-      qta: 1,
-      codice: "DAS001048",
-      descrizione: "descrizione primo elemento",
-      fan: "N",
-      //pos_pr = req.body.pos_pr,
-      progetto_stock: "STOCK", //nella tabella è chiamato progetto, ma avrei una ripetizione
-      note: "nessuna nota",
-      seriale: "Derivato",
-      primario: "S"
-    }
-  }
-
-  db.sequelize
-    .sync()
-    .then(function () {
-      // con la funzione create posso direttamente passare req.body se questa è già correttamente formattata
-      // db.PartcodeEbom.create(req.body)
-      // posso filtrare i campi di req.body tramite fields[]
-
-      // idproduct ha senso, come diceva il prof, collegare ad ogni ebom il prodotto a cui fa riferimento?
-      //idebom: idebom, //external key for parent ebom. quale dovrebbe essere nella tabella?
-      db.PartcodeEbom.create(ebomReq.body)
-    })
-    .then(() => {
-      db.Product.create(productReq.body)
-    })
     .then(() => {
       res.send("Ebom registration finished sucessfully")
     })
 })
 
-router.get('/mbomRegistration', (req, res) => {
-
-  let date = new Date()
-  //attributi prodotto
-  var productReq = {
-    body: {
-      articolo: "VSS000799 TEST",
-      progetto: "01450.015",
-      approvatore: "system",
-      ultimo_agg: date,
-      mod_da: "mstuffo",
-      // external keys necessarie
-      iddetails: 1,
-      idebom: 1,
-      idmbom: 1
-
-    }
-  }
-  //attributi ebom
-  var mbomReq = {
-    body: {
-      idebom: 1,
-      m_b: "M",
-      liv: 1,
-      pos: "001",
-      um: "nr",
-      qta: 1,
-      codice: "DAS001048",
-      descrizione: "descrizione primo elemento",
-      fan: "N",
-      //pos_pr = req.body.pos_pr,
-      progetto_stock: "STOCK", //nella tabella è chiamato progetto, ma avrei una ripetizione
-      note: "nessuna nota",
-      seriale: "Derivato",
-      primario: "S"
-    }
-  }
-
+router.post("/mbomJsonPOST", (req, res) => {
   db.sequelize
     .sync()
     .then(function () {
-      db.PartcodeMbom.create(mbomReq.body)
-    })
-    .then(() => {
-      db.Product.create(productReq.body)
+      db.PartcodeMbom.create({
+        idebom: req.body["idebom"],
+        m_b: req.body["m_b"],
+        liv: req.body["liv"],
+        pos: req.body["pos"],
+        um: req.body["um"],
+        qta: req.body["qta"],
+        codice: req.body["codice"],
+        descrizione: req.body["descrizione"],
+        fan: req.body["fan"],
+        //pos_pr = req.body.pos_pr,
+        progetto_stock: req.body["progetto_stock"],
+        note: req.body["note"],
+        seriale: req.body["seriale"],
+        primario: req.body["primario"]
+      })
     })
     .then(() => {
       res.send("Mbom registration finished sucessfully")
+    })
+})
+
+router.post("/salesOrderRegistration", (req, res) => {
+  console.log("---------------------------")
+  console.log(req.body["orderItem1"][0])
+  console.log(req.body["orderItem1"][1])
+  console.log(req.body["orderItem1"][2])
+  console.log(req.body["orderItem1"][3])
+  console.log("---------------------------")
+  db.sequelize
+    .sync()
+    .then(() => {
+      db.SalesOrder.create({
+        vendorArrivalDate: req.body["vendorArrivalDate"],
+        projId: req.body["projId"],
+        projDeliveryDate: req.body["projDeliveryDate"],
+        idclient: req.body["idclient"],
+      })
+    })
+    .then(() => {
+      db.SalesOrderItem.create({
+        itemId: req.body["orderItem1"][0],
+        itemName: req.body["orderItem1"][1],
+        idsalesorder: req.body["orderItem1"][2],
+        idproduct: req.body["orderItem1"][3]
+      })
+      db.SalesOrderItem.create({
+        itemId: req.body["orderItem2"][0],
+        itemName: req.body["orderItem2"][1],
+        idsalesorder: req.body["orderItem2"][2],
+        idproduct: req.body["orderItem1"][3]
+      })
+    })
+    .then(() => {
+      res.send("insertion sales order and order items in the database finished sucessfully")
     })
 })
 
@@ -605,24 +537,6 @@ router.get('/realTask/:id', function (req, res) {
   })
 })
 
-router.get('/ciao', function(req, res) {
-  res.json({
-    a : "ciao"
-  })
-})
-
-
-
-
-router.post('/testJson', function(req, res) {
-  console.log(req.body["fan"])
-  //let json = JSON.parse(req.body)
-  //console.log(json.pos)
-  //console.log(json)
-  res.json({
-    a: "OK"
-  })
-})
 
 
 
