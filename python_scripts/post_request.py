@@ -17,7 +17,8 @@ ebom = {
     "articolo": "fsdfd",
     "progetto": "prog1",
     "approvatore": "approvato",
-    "mod_da": "modif"}
+    "mod_da": "modif",
+    "idproduct": 1} #ext key
 
 mbom = {
     "idebom": 1,
@@ -47,19 +48,46 @@ sales_order = {
     "idclient": 1,
     "orderItem1":
         [
-            1,
-            "name 1",
-            1,
-            1
+            1,  #itemId
+            "name 1",   #itemName
+            1,  #idsalesorder
+            1   #idproduct
         ],
     "orderItem2":
         [
-            2,
-            "name 2",
-            1,
-            1
+            2,  #itemId
+            "name 2",   #itemName
+            1,  #idsalesorder
+            1   #idproduct
         ],
 }
+
+# salvare i time come double??
+production_order = {
+    "prodId": "ODP0004706",
+    "itemId": "DSI004919",
+    "itemName": "CYLINDER PIN",
+    "qtySched": 4.0000000000000000,
+    "prodStatus": 4,
+    "projId": "00717.061",
+    "oprNum": 20,
+    "oprId": "863",
+    "oprName": "TORNIRE A DISEGNO -E-",
+    "oprNumNext": 30,
+    "oprFinished": 0,
+    "queueTimeBefore": 0.0000000000000000,
+    "setupTime": 0.2000000000000000,
+    "processTime": 0.3000000000000000,
+    "processPerQty": 1.0000000000000000,
+    "transPTime": 72.0000000000000000,
+    "queueTimeAfter": 0.0000000000000000,
+    "toHours": 1.0000000000000000,
+    "wrkCtrGroupId": "01ALAVEST",                          
+    "projectDeliveryDate": "2045-12-31T00:00:00+01:00",
+    "vendorArrivalDate": "2022-12-31T00:00:00+01:00",      
+    "vendorName": "...",
+    "isExternal": "0/1",
+  }
 
 # prima di passare la richiesta con request riesco ad individuare
 # gli elementi all'interno di orderItems, ma una volta inviata la richiesta
@@ -86,13 +114,6 @@ sales_order_right = {
     ]
 }
 
-# ebomJson=json.dumps(ebom)
-# print(ebomJson)
-# r = requests.get("http://localhost:4000/services/ciao")
-# r = requests.post("http://localhost:4000/services/ebomGETPOST", (ebom))
-# rEbom = requests.post("http://localhost:4000/services/ebomJsonPOST", (ebom))
-#rMbom = requests.post("http://localhost:4000/services/mbomJsonPOST", (mbom))
-rSalesOrder = requests.post("http://localhost:4000/services/salesORderRegistration", (sales_order))
-
-#print(sales_order["orderItems"][1])
-print(rSalesOrder)
+#rEbom = requests.post("http://localhost:4000/services/ebomJsonPOST", (ebom))
+rMbom = requests.post("http://localhost:4000/services/mbomJsonPOST", (mbom))
+#rSalesOrder = requests.post("http://localhost:4000/services/salesORderRegistration", (sales_order))

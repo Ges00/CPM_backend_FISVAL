@@ -8,13 +8,6 @@ let db = require("../models");
 //const Product = require('../models/product_perspective/Product');
 db.sequelize.sync()
 
-// testing a user
-let aldo = {
-  idsupplychainactor: "NULL",
-  nome: "aldo",
-  cognome: "ritmo"
-}
-
 // services home
 router.get("/", (req, res) => {
   console.log("services home")
@@ -50,6 +43,16 @@ router.get("/initializingDB", (req, res) => {
       })
     })
     .then(function () {
+      db.Product.create({
+        id: 1,
+        articolo: "ARTICOLO TEST",
+        progetto: "PROGETTO TEST",
+        approvatore: "APPROVATORE TEST",
+        ultimo_agg: new Date(),
+        mod_da: "STUFFO TEST",
+      })
+    })
+    .then(function () {
       db.PartcodeEbom.create({
         id: 1,
         liv: 1,
@@ -63,13 +66,13 @@ router.get("/initializingDB", (req, res) => {
         progetto_stock: "STOCK", //nella tabella è chiamato progetto, ma avrei una ripetizione, quindi aggiungo "stock"
         note: "nessuna nota",
         seriale: "Derivato",
-        primario: "S"
+        primario: "S",
+        idproduct: 1, //ext key
       })
     })
     .then(function () {
       db.PartcodeMbom.create({
         id: 1,
-        idebom: 1, //ext key
         m_b: "M",
         liv: 1,
         pos: "001",
@@ -82,27 +85,8 @@ router.get("/initializingDB", (req, res) => {
         progetto_stock: "STOCK",
         note: "nessuna nota",
         seriale: "Derivato",
-        primario: "S"
-      })
-    })
-    // .then(function () {
-    //   db.ProductDetails.create({
-    //     id: 1,
-    //     // per ora non ci sono attributi necessari
-    //   })
-    // })
-    .then(function () {
-      db.Product.create({
-        id: 1,
-        articolo: "ARTICOLO TEST",
-        progetto: "PROGETTO TEST",
-        approvatore: "APPROVATORE TEST",
-        ultimo_agg: new Date(),
-        mod_da: "STUFFO TEST",
-        // external keys necessarie
-        iddetails: 1,
-        idebom: 1,
-        //idmbom: 1
+        primario: "S",
+        idebom: 1, //ext key
       })
     })
     .then(() => {
@@ -132,7 +116,7 @@ router.get("/initializingDB", (req, res) => {
         idworkorder: 1,
         idpurchaseorder: 1,
         idorderitem: 1,
-        prodStatus: "OK",
+        prodStatus: 4,
         qtySched: 10
       })
     })
@@ -143,6 +127,45 @@ router.get("/initializingDB", (req, res) => {
 
 // TO DO 
 router.get("/notifyProductionOrder", (req, res) => {
+  // json = {
+  //   "prodId": "ODP0004706",
+  //   "itemId": "DSI004919",
+  //   "itemName": "CYLINDER PIN",
+  //   "qtySched": 4.0000000000000000,
+  //   "prodStatus": 4,
+  //   "projId": "00717.061",
+  //   "oprNum": 20,
+  //   "oprId": "863",
+  //   "oprName": "TORNIRE A DISEGNO -E-",
+  //   "oprNumNext": 30,
+  //   "oprFinished": 0,
+  //   "queueTimeBefore": 0.0000000000000000,
+  //   "setupTime": 0.2000000000000000,
+  //   "processTime": 0.3000000000000000,
+  //   "processPerQty": 1.0000000000000000,
+  //   "transPTime": 72.0000000000000000,
+  //   "queueTimeAfter": 0.0000000000000000,
+  //   "toHours": 1.0000000000000000,
+  //   "wrkCtrGroupId": "01ALAVEST",                          // se il campo "wrkCtrGroupId"assume il valore "01ALAVEST", allora la fase di lavorazione non è interna, ma esterna;
+  //   "projectDeliveryDate": "2045-12-31T00:00:00+01:00",
+  //   "vendorArrivalDate": "2022-12-31T00:00:00+01:00",      // in caso di lavorazione esterna, il campo "vendorArrivalDate"avrà valore"null"
+  //   "vendorName": "...",                                   // nome del fornitore
+  //   "isExternal": "0/1",
+  // }
+  if (req.body["wrkCtrGroupId"] === "01ALAVEST") {
+    // lavorazione ESTERNA
+    let isExternal = 1
+    let vendorArrivalDate = null
+    // richiesta valore vendorArrivalDate al fornitore, il cui nome è vendorName
+    vendorArrivalDate = richiestaDataFornitore(vendorName)
+
+  } else {
+    // lavorazione INTERNA
+    let isExternal = 0
+    let vendorArrivalDate = null
+
+  }
+
   db.sequelize
     .sync()
     .then(() => {
@@ -151,55 +174,13 @@ router.get("/notifyProductionOrder", (req, res) => {
         idworkorder: 1,
         idpurchaseorder: 1,
         idorderitem: 1,
-        prodStatus: "OK",
+        prodStatus: 4,
         qtySched: 10
       })
     })
     .then(() => {
       res.send("insertion sales order and order items in the database finished sucessfully")
     })
-})
-
-router.get("/salesOrderRegistration", (req, res) => {
-  var sales_order = {
-    //sales order
-    vendorArrivalDate: new Date(),
-    projId: 2,
-    projDeliveryDate: new Date(),
-    //ext keys
-    idclient: 1
-  }
-
-  var order_item_1 = {
-    //sales order item
-    // qta: 11,
-    itemId: 1,
-    itemName: "name 1",
-    // ext key
-    idsalesorder: 1
-  }
-
-  var order_item_2 = {
-    //sales order item
-    //qta: 22,
-    itemId: 2,
-    itemName: "name 2",
-    // ext key
-    idsalesorder: 1
-  }
-  db.sequelize
-    .sync()
-    .then(() => {
-      db.SalesOrder.create(sales_order)
-    })
-    .then(() => {
-      db.SalesOrderItem.create(order_item_1)
-      db.SalesOrderItem.create(order_item_2)
-    })
-    .then(() => {
-      res.send("insertion sales order and order items in the database finished sucessfully")
-    })
-
 })
 
 // have to be casted when the db has just being created, to insert all the necessaries 
@@ -311,51 +292,6 @@ router.get("/insertData", (req, res) => {
     })
 })
 
-// route to the html index file we have to compile to then send
-// the post request
-// var path = require('path');
-// const { type } = require('os');
-// router.get("/ebomGETPOST", function (req, res) {
-//   res.sendFile(path.join(__dirname + '/ebomRequest.html'));
-// });
-// // route submitted after compiling the form
-// router.post("/ebomGETPOST", (req, res) => {
-//   db.sequelize
-//     .sync()
-//     .then(function () {
-//       db.PartcodeEbom.create({
-//         liv: req.body.liv,
-//         pos: req.body.pos,
-//         um: req.body.um,
-//         qta: req.body.qta,
-//         codice: req.body.codice,
-//         descrizione: req.body.descrizione,
-//         fan: req.body.fan,
-//         //pos_pr = req.body.pos_pr,
-//         progetto_stock: req.body.progetto_stock,
-//         note: req.body.note,
-//         seriale: req.body.seriale,
-//         primario: req.body.primario
-//       })
-//     })
-//     .then(() => {
-//       db.Product.create({
-//         articolo: req.body.articolo,
-//         progetto: req.body.progetto,
-//         approvatore: req.body.approvatore,
-//         ultimo_agg: new Date(),
-//         mod_da: req.body.mod_da,
-//         // external keys necessarie
-//         iddetails: 1,
-//         idebom: 1,
-//         idmbom: 1
-//       })
-//     })
-//     .then(() => {
-//       res.send("Ebom registration finished sucessfully")
-//     })
-// })
-
 router.post("/ebomJsonPOST", (req, res) => {
   db.sequelize
     .sync()
@@ -372,7 +308,8 @@ router.post("/ebomJsonPOST", (req, res) => {
         progetto_stock: req.body["progetto_stock"],
         note: req.body["note"],
         seriale: req.body["seriale"],
-        primario: req.body["primario"]
+        primario: req.body["primario"],
+        idproduct: req.body["idproduct"]
       })
     })
     .then(() => {
@@ -538,7 +475,91 @@ router.get('/realTask/:id', function (req, res) {
 })
 
 
+// route to the html index file we have to compile to then send
+// the post request
+// var path = require('path');
+// const { type } = require('os');
+// router.get("/ebomGETPOST", function (req, res) {
+//   res.sendFile(path.join(__dirname + '/ebomRequest.html'));
+// });
+// // route submitted after compiling the form
+// router.post("/ebomGETPOST", (req, res) => {
+//   db.sequelize
+//     .sync()
+//     .then(function () {
+//       db.PartcodeEbom.create({
+//         liv: req.body.liv,
+//         pos: req.body.pos,
+//         um: req.body.um,
+//         qta: req.body.qta,
+//         codice: req.body.codice,
+//         descrizione: req.body.descrizione,
+//         fan: req.body.fan,
+//         //pos_pr = req.body.pos_pr,
+//         progetto_stock: req.body.progetto_stock,
+//         note: req.body.note,
+//         seriale: req.body.seriale,
+//         primario: req.body.primario
+//       })
+//     })
+//     .then(() => {
+//       db.Product.create({
+//         articolo: req.body.articolo,
+//         progetto: req.body.progetto,
+//         approvatore: req.body.approvatore,
+//         ultimo_agg: new Date(),
+//         mod_da: req.body.mod_da,
+//         // external keys necessarie
+//         iddetails: 1,
+//         idebom: 1,
+//         idmbom: 1
+//       })
+//     })
+//     .then(() => {
+//       res.send("Ebom registration finished sucessfully")
+//     })
+// })
 
+// router.get("/salesOrderRegistration", (req, res) => {
+//   var sales_order = {
+//     //sales order
+//     vendorArrivalDate: new Date(),
+//     projId: 2,
+//     projDeliveryDate: new Date(),
+//     //ext keys
+//     idclient: 1
+//   }
+
+//   var order_item_1 = {
+//     //sales order item
+//     // qta: 11,
+//     itemId: 1,
+//     itemName: "name 1",
+//     // ext key
+//     idsalesorder: 1
+//   }
+
+//   var order_item_2 = {
+//     //sales order item
+//     //qta: 22,
+//     itemId: 2,
+//     itemName: "name 2",
+//     // ext key
+//     idsalesorder: 1
+//   }
+//   db.sequelize
+//     .sync()
+//     .then(() => {
+//       db.SalesOrder.create(sales_order)
+//     })
+//     .then(() => {
+//       db.SalesOrderItem.create(order_item_1)
+//       db.SalesOrderItem.create(order_item_2)
+//     })
+//     .then(() => {
+//       res.send("insertion sales order and order items in the database finished sucessfully")
+//     })
+// })
 
 //  ########################### servizi di testing, non utilizzati ###################################################
 // router.get('/task1', function (req, res) {

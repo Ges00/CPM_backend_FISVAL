@@ -9,10 +9,10 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
             primaryKey: true
         },
-        idebom: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
+        // idebom: {
+        //     type: DataTypes.INTEGER,
+        //     allowNull: false
+        // },
         // idmbom: {
         //     type: DataTypes.INTEGER,
         //     allowNull: false
@@ -64,13 +64,13 @@ module.exports = function (sequelize, DataTypes) {
                     { name: "id" },
                 ]
             },
-            {
-                name: "ebom_partcode",
-                using: "BTREE",
-                fields: [
-                    { name: "idebom" },
-                ]
-            },
+            // {
+            //     name: "ebom_partcode",
+            //     using: "BTREE",
+            //     fields: [
+            //         { name: "idebom" },
+            //     ]
+            // },
             // {
             //     name: "mbom_partcode",
             //     using: "BTREE",

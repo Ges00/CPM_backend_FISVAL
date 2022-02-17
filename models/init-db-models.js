@@ -61,8 +61,8 @@ function initModels(sequelize){
     //SCHEMA ER 2
     //Product.belongsTo(ProductDetails, { foreignKey: "iddeatils"});
     //ProductDetails.hasOne(Product, { foreignKey: "iddeatils"});
-    Product.belongsTo(PartcodeEbom, { foreignKey: "idebom"});
-    PartcodeEbom.hasOne(Product, { foreignKey: "idebom"});
+    PartcodeEbom.belongsTo(Product, { foreignKey: "idproduct"});
+    Product.hasOne(PartcodeEbom, { foreignKey: "idproduct"});
 
     //Product.belongsTo(PartcodeMbom, { foreignKey: "idmbom"});
     //PartcodeMbom.hasOne(Product, { foreignKey: "idmbom"});

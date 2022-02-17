@@ -11,6 +11,10 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             allowNull: true
         },
+        idproduct: {
+            type: DataTypes.INTEGER,
+            allowNull: false    
+        },
         liv: {
             type: DataTypes.INTEGER,
             allowNull: false
@@ -75,6 +79,13 @@ module.exports = function (sequelize, DataTypes) {
                 using: "BTREE",
                 fields: [
                     { name: "idebom" },
+                ]
+            },
+            {
+                name: "product",
+                using: "BTREE",
+                fields: [
+                    { name: "idproduct" },
                 ]
             },
         ]
