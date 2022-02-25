@@ -175,7 +175,28 @@ router.get("/notifyProductionOrder", (req, res) => {
         idpurchaseorder: 1,
         idorderitem: 1,
         prodStatus: 4,
-        qtySched: 10
+        qtySched: 10,
+        // prodId: req.body["prodId"],
+        // itemId: req.body["itemId"],
+        // projId: req.body["projId"],
+        // oprNum: req.body["oprNum"],
+        // oprId: req.body["oprId"],
+        // oprName: req.body["oprName"],
+        // oprNumNext: req.body["oprNumNext"],
+        // oprFinished: req.body["oprFinished"],
+        // queueTimeBefore: req.body["queueTimeBefore"],
+        // setupTime: req.body["setupTime"],
+        // processTime: req.body["processTime"],
+        // processPerQty: req.body["processPerQty"],
+        // transPTime: req.body["transPTime"],
+        // queueTimeAfter: req.body["queueTimeAfter"],
+        // toHours: req.body["toHours"],
+        // wrkCtrGroupId: req.body["wrkCtrGroupId"],
+        // projectDeliveryDate: req.body["projectDeliveryDate"],
+        // vendorArrivalDate: req.body["vendorArrivalDate"],
+        // vendorName: req.body["vendorName"],
+        // isExternal: req.body["isExternal"]
+
       })
     })
     .then(() => {

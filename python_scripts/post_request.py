@@ -63,6 +63,7 @@ sales_order = {
 }
 
 # salvare i time come double??
+# json per servizio notifyProductionOrder
 production_order = {
     "prodId": "ODP0004706",
     "itemId": "DSI004919",
