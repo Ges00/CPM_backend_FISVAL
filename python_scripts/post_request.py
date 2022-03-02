@@ -65,10 +65,10 @@ sales_order = {
 # salvare i time come double??
 # json per servizio notifyProductionOrder
 production_order = {
-    "prodId": "ODP0004706",
-    "itemId": "DSI004919",
-    "itemName": "CYLINDER PIN",
-    "qtySched": 4.0000000000000000,
+    "prodId": "ODP0004706",#
+    "itemId": "DSI004919",#
+    "itemName": "CYLINDER PIN",#
+    "qtySched": 4.0000000000000000,#
     "prodStatus": 4,
     "projId": "00717.061",
     "oprNum": 20,
@@ -84,9 +84,9 @@ production_order = {
     "queueTimeAfter": 0.0000000000000000,
     "toHours": 1.0000000000000000,
     "wrkCtrGroupId": "01ALAVEST",                          
-    "projectDeliveryDate": "2045-12-31T00:00:00+01:00",
-    "vendorArrivalDate": "2022-12-31T00:00:00+01:00",      
-    "vendorName": "...",
+    "projectDeliveryDate": "2045-12-31T00:00:00+01:00",#
+    "vendorArrivalDate": "2022-12-31T00:00:00+01:00",##   
+    "vendorName": "test vendor",
     "isExternal": "0/1",
   }
 
@@ -116,5 +116,6 @@ sales_order_right = {
 }
 
 #rEbom = requests.post("http://localhost:4000/services/ebomJsonPOST", (ebom))
-rMbom = requests.post("http://localhost:4000/services/mbomJsonPOST", (mbom))
+#rMbom = requests.post("http://localhost:4000/services/mbomJsonPOST", (mbom))
 #rSalesOrder = requests.post("http://localhost:4000/services/salesORderRegistration", (sales_order))
+rProdOrder = requests.post("http://localhost:4000/services/notifyProductionOrder", (production_order))

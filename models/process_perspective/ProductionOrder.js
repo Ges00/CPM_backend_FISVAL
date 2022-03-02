@@ -28,96 +28,96 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false
         },
         qtySched: {
+            type: DataTypes.FLOAT,
+            allowNull: false
+        },
+        prodId: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        itemId: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        itemName: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        projId: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        oprNum: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        // prodId: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // itemId: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // itemName: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // projId: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // oprNum: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false
-        // },
-        // oprId: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // oprName: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // oprNumNext: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false
-        // },
-        // oprFinished: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false
-        // },
-        // // controllare se possibile salvare il dato con tipo TIME 
-        // queueTimeBefore: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // setupTime: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // processTime: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // processPerQty: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // transPTime: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // queueTimeAfter: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // toHours: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // wrkGroupId: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // // controllare formato data
-        // projectDeliveryDate: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // // controllare formato data
-        // vendorArrivalDate: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // vendorName: {
-        //     type: DataTypes.STRING(255),
-        //     allowNull: false
-        // },
-        // isExternal: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false
-        // },
+        oprId: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        oprName: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        oprNumNext: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        oprFinished: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        // controllare se possibile salvare il dato con tipo TIME 
+        queueTimeBefore: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        setupTime: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        processTime: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        processPerQty: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        transPTime: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        queueTimeAfter: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        toHours: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        wrkCtrGroupId: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        // controllare formato data
+        projectDeliveryDate: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        // controllare formato data
+        vendorArrivalDate: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        vendorName: {
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        isExternal: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
     }, {
         sequelize,
         tableName: 'ProductionOrder',

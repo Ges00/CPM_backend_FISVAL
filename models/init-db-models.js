@@ -27,7 +27,8 @@ let _Supplyed = require('./actor_perspective/Supplyed');
 let _User = require('./actor_perspective/User');
 let _UserCategory = require('./actor_perspective/UserCategory');
 let _WorkCenter = require('./asset_perspective/WorkCenter');
-
+// tabella utilità
+let _VendorService = require('./VendorService');
 
 function initModels(sequelize){
     //let ClientDetails = _ClientDetails(sequelize, DataTypes);
@@ -57,6 +58,7 @@ function initModels(sequelize){
     let User = _User(sequelize, DataTypes);
     let UserCategory = _UserCategory(sequelize, DataTypes);
     let WorkCenter = _WorkCenter(sequelize, DataTypes);
+    let VendorService = _VendorService(sequelize, DataTypes);
 
     //SCHEMA ER 2
     //Product.belongsTo(ProductDetails, { foreignKey: "iddeatils"});
@@ -181,6 +183,7 @@ function initModels(sequelize){
         User,
         UserCategory,
         WorkCenter,
+        VendorService
     };
 }
 module.exports = initModels;

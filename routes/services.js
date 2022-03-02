@@ -19,6 +19,16 @@ router.get("/initializingDB", (req, res) => {
   db.sequelize
     .sync()
     .then(function () {
+      db.Product.create({
+        id: 1,
+        articolo: "ARTICOLO TEST",
+        progetto: "PROGETTO TEST",
+        approvatore: "APPROVATORE TEST",
+        ultimo_agg: new Date(),
+        mod_da: "STUFFO TEST",
+      })
+    })
+    .then(function () {
       db.SupplyChainClient.create({
         id: 1,
         // idactorclient null 
@@ -40,16 +50,6 @@ router.get("/initializingDB", (req, res) => {
         idproduct: 1, //ext key
         itemId: 3,
         itemName: "test item"
-      })
-    })
-    .then(function () {
-      db.Product.create({
-        id: 1,
-        articolo: "ARTICOLO TEST",
-        progetto: "PROGETTO TEST",
-        approvatore: "APPROVATORE TEST",
-        ultimo_agg: new Date(),
-        mod_da: "STUFFO TEST",
       })
     })
     .then(function () {
@@ -116,8 +116,36 @@ router.get("/initializingDB", (req, res) => {
         idworkorder: 1,
         idpurchaseorder: 1,
         idorderitem: 1,
+        prodId: "ODP0004706",
+        itemId: "DSI004919",
+        itemName: "CYLINDER PIN",
+        qtySched: 10.0000000000000000,
         prodStatus: 4,
-        qtySched: 10
+        projId: "00717.061",
+        oprNum: 20,
+        oprId: "863",
+        oprName: "TORNIRE A DISEGNO -E-",
+        oprNumNext: 30,
+        oprFinished: 0,
+        queueTimeBefore: 0.0000000000000000,
+        setupTime: 0.2000000000000000,
+        processTime: 0.3000000000000000,
+        processPerQty: 1.0000000000000000,
+        transPTime: 72.0000000000000000,
+        queueTimeAfter: 0.0000000000000000,
+        toHours: 1.0000000000000000,
+        wrkCtrGroupId: "01ALAVEST",
+        projectDeliveryDate: "2045-12-31T00:00:00+01:00",
+        vendorArrivalDate: "2022-12-31T00:00:00+01:00",
+        vendorName: "test vendor",
+        isExternal: "0/1",
+      })
+    })
+    .then(() => {
+      db.VendorService.create({
+        vendorname: "test vendor",
+        serviceurl: "",
+        servicetype: "external"
       })
     })
     .then(() => {
@@ -126,7 +154,7 @@ router.get("/initializingDB", (req, res) => {
 })
 
 // TO DO 
-router.get("/notifyProductionOrder", (req, res) => {
+router.post("/notifyProductionOrder", (req, res) => {
   // json = {
   //   "prodId": "ODP0004706",
   //   "itemId": "DSI004919",
@@ -152,19 +180,33 @@ router.get("/notifyProductionOrder", (req, res) => {
   //   "vendorName": "...",                                   // nome del fornitore
   //   "isExternal": "0/1",
   // }
-  if (req.body["wrkCtrGroupId"] === "01ALAVEST") {
-    // lavorazione ESTERNA
-    let isExternal = 1
-    let vendorArrivalDate = null
-    // richiesta valore vendorArrivalDate al fornitore, il cui nome è vendorName
-    vendorArrivalDate = richiestaDataFornitore(vendorName)
+  vendorName = req.body['vendorName']
 
-  } else {
-    // lavorazione INTERNA
-    let isExternal = 0
-    let vendorArrivalDate = null
+  db.VendorService.findAll({
+    where: {
+      vendorname: vendorName
+    },
+  }).then((attr) => {
+    let serviceUrl = attr[0].serviceUrl
 
-  }
+    //ResultArrivalDate = richiestaDataFornitore(serviceUrl)
+    ResultArrivalDate = "2022-03-02T00:00:00+01:00"
+
+  })
+
+  // if (req.body["wrkCtrGroupId"] === "01ALAVEST") {
+  //   // lavorazione ESTERNA
+  //   let isExternal = 1
+  //   let ResultArrivalDate = null
+  //   // richiesta valore vendorArrivalDate al fornitore, il cui nome è vendorName
+  //   ResultArrivalDate = richiestaDataFornitore(vendorName) //ritorna un json
+
+  // } else {
+  //   // lavorazione INTERNA
+  //   let isExternal = 0
+  //   let ResultArrivalDate = null
+
+  // }
 
   db.sequelize
     .sync()
@@ -174,29 +216,29 @@ router.get("/notifyProductionOrder", (req, res) => {
         idworkorder: 1,
         idpurchaseorder: 1,
         idorderitem: 1,
-        prodStatus: 4,
-        qtySched: 10,
-        // prodId: req.body["prodId"],
-        // itemId: req.body["itemId"],
-        // projId: req.body["projId"],
-        // oprNum: req.body["oprNum"],
-        // oprId: req.body["oprId"],
-        // oprName: req.body["oprName"],
-        // oprNumNext: req.body["oprNumNext"],
-        // oprFinished: req.body["oprFinished"],
-        // queueTimeBefore: req.body["queueTimeBefore"],
-        // setupTime: req.body["setupTime"],
-        // processTime: req.body["processTime"],
-        // processPerQty: req.body["processPerQty"],
-        // transPTime: req.body["transPTime"],
-        // queueTimeAfter: req.body["queueTimeAfter"],
-        // toHours: req.body["toHours"],
-        // wrkCtrGroupId: req.body["wrkCtrGroupId"],
-        // projectDeliveryDate: req.body["projectDeliveryDate"],
-        // vendorArrivalDate: req.body["vendorArrivalDate"],
-        // vendorName: req.body["vendorName"],
-        // isExternal: req.body["isExternal"]
-
+        prodId: req.body["prodId"],
+        itemId: req.body["itemId"],
+        itemName: req.body["itemName"],
+        qtySched: req.body["qtySched"],
+        prodStatus: req.body["prodStatus"],        
+        projId: req.body["projId"],
+        oprNum: req.body["oprNum"],
+        oprId: req.body["oprId"],
+        oprName: req.body["oprName"],
+        oprNumNext: req.body["oprNumNext"],
+        oprFinished: req.body["oprFinished"],
+        queueTimeBefore: req.body["queueTimeBefore"],
+        setupTime: req.body["setupTime"],
+        processTime: req.body["processTime"],
+        processPerQty: req.body["processPerQty"],
+        transPTime: req.body["transPTime"],
+        queueTimeAfter: req.body["queueTimeAfter"],
+        toHours: req.body["toHours"],
+        wrkCtrGroupId: req.body["wrkCtrGroupId"],
+        projectDeliveryDate: req.body["projectDeliveryDate"],
+        vendorArrivalDate: ResultArrivalDate,
+        vendorName: req.body["vendorName"],
+        isExternal: req.body["isExternal"]
       })
     })
     .then(() => {
