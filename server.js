@@ -32,6 +32,6 @@ const userRouter = require("./routes/services")
 app.use("/services", userRouter)
 
 
-app.listen(PORT, function () {
+app.listen(process.env.PORT || PORT, function () {
   console.log("App listening on PORT " + PORT);
 });
