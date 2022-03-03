@@ -28,7 +28,7 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false
         },
         qtySched: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(25, 16),
             allowNull: false
         },
         prodId: {
@@ -67,33 +67,32 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        // controllare se possibile salvare il dato con tipo TIME 
         queueTimeBefore: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.DECIMAL(25, 16),
             allowNull: false
         },
         setupTime: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.DECIMAL(25, 16),
             allowNull: false
         },
         processTime: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.DECIMAL(25, 16),
             allowNull: false
         },
         processPerQty: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.DECIMAL(25, 16),
             allowNull: false
         },
         transPTime: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.DECIMAL(25, 16),
             allowNull: false
         },
         queueTimeAfter: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.DECIMAL(25, 16),
             allowNull: false
         },
         toHours: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.DECIMAL(25, 16),
             allowNull: false
         },
         wrkCtrGroupId: {

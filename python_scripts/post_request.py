@@ -18,7 +18,8 @@ ebom = {
     "progetto": "prog1",
     "approvatore": "approvato",
     "mod_da": "modif",
-    "idproduct": 1} #ext key
+    "idproduct": 1 #ext key
+    } 
 
 mbom = {
     "idebom": 1,
@@ -38,7 +39,8 @@ mbom = {
     "articolo": "fsdfd",
     "progetto": "prog1",
     "approvatore": "approvato",
-    "mod_da": "modif"}
+    "mod_da": "modif"
+    }
 
 # aggiungere quantità per ogni order item?
 sales_order = {

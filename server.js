@@ -1,7 +1,7 @@
 const express = require("express");
-const sessione = require("express-session");
-const bodyParser = require("body-parser");
-var passport = require("./config/passport");
+//const sessione = require("express-session");
+//const bodyParser = require("body-parser");
+//var passport = require("./config/passport");
 
 const PORT = 4000;
 
