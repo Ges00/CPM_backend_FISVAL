@@ -10,7 +10,8 @@
     "sqlite3": "^5.0.2"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js",
+    "start:dev": "nodemon server.js"
   },
   "devDependencies": {
     "express": "^4.17.2",
