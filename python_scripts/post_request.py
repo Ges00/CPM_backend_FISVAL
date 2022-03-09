@@ -117,7 +117,30 @@ sales_order_right = {
     ]
 }
 
+sales_order_test = {
+    "vendorArrivalDate": "2022-02-11 14:42:29",
+    "projId": 2,
+    "projDeliveryDate": "2022-02-16 14:42:29",
+    "idclient": 1,
+    "orderItems": [
+        {
+            1,
+            "name 1",
+            1,
+            1
+        },
+        {
+            2,
+            "name 2",
+            1,
+            1
+        },
+    ]
+}
+
 #rEbom = requests.post("http://localhost:4000/services/ebomJsonPOST", (ebom))
 #rMbom = requests.post("http://localhost:4000/services/mbomJsonPOST", (mbom))
 #rSalesOrder = requests.post("http://localhost:4000/services/salesORderRegistration", (sales_order))
 rProdOrder = requests.post("http://localhost:4000/services/notifyProductionOrder", (production_order))
+#testjson = requests.post("http://localhost:4000/services/testjson", (sales_order_test))
+#print(testjson)
