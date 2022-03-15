@@ -145,7 +145,7 @@ router.get("/initializingDB", (req, res) => {
         .then(() => {
             db.VendorService.create({
                 vendorname: "test vendor",
-                serviceurl: "",
+                serviceurl: "http://localhost:4000/services/fornitore",
                 servicetype: "external"
             })
         })
@@ -196,7 +196,7 @@ router.post("/notifyProductionOrder", (req, res) => {
             },
         })
         .then((attr) => {
-            let serviceUrl = attr[0].serviceUrl
+            let serviceUrl = attr[0].serviceurl
 
             //ResultArrivalDate = richiestaDataFornitore(serviceUrl)
             // axios.get('/fornitore', {
@@ -210,7 +210,7 @@ router.post("/notifyProductionOrder", (req, res) => {
             //     }
             // })
             console.log("AXIOS POST REQUEST")
-            axios.post('http://localhost:4000/services/fornitore', {
+            axios.post(serviceUrl, {
                     prodId: "ODP0004706",
                     itemId: "DSI004919",
                     itemName: "CYLINDER PIN",
@@ -218,7 +218,7 @@ router.post("/notifyProductionOrder", (req, res) => {
                     projectDeliveryDate: "2045-12-31T00:00:00+01:00",
                 })
                 .then(res => {
-                    console.log("inside axios" + res.body["arrivalDate"])
+                    console.log("inside axios " + res.body)
                 })
                 //ResultArrivalDate = "2022-03-02T00:00:00+01:00"
 
